@@ -4,25 +4,28 @@
 UUID=${UUID:-"de04add9-5c68-8bab-950c-08cd5320df18"}
 PORT=${PORT:-8080}
 
-# 1. Start a simple Python HTTP server in the background on the same port
-# This responds to Koyeb's health checks and external pings
-echo "Starting ping responder..."
-python3 -m http.server $PORT & 
+# 1. Start Python on a PRIVATE port (8000)
+# This will not conflict with the main port 8080
+echo "Starting internal web server on port 8000..."
+python3 -m http.server 8000 & 
 
-# 2. Create V2Ray config
+# 2. Create V2Ray config with "Fallback"
 cat << EOF > /v2ray/config.json
 {
     "inbounds": [{
-        "port": $PORT, 
+        "port": $PORT,
         "protocol": "vless",
         "settings": {
             "clients": [{"id": "$UUID"}],
-            "decryption": "none"
+            "decryption": "none",
+            "fallbacks": [{
+                "dest": 8000 
+            }]
         },
         "streamSettings": {
             "network": "ws",
             "wsSettings": {
-                "path": "/vless" 
+                "path": "/vless"
             }
         }
     }],
@@ -31,5 +34,5 @@ cat << EOF > /v2ray/config.json
 EOF
 
 # 3. Start V2Ray
-echo "Starting V2Ray..."
+echo "Starting V2Ray on public port $PORT..."
 /v2ray/v2ray run -config /v2ray/config.json
