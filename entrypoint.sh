@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Set defaults
-UUID=${UUID:-"samuel"}
+UUID=${UUID:-"de04add9-5c68-8bab-950c-08cd5320df18"}
 PORT=${PORT:-8080}
 
 # 1. Start a simple Python HTTP server in the background on the same port
