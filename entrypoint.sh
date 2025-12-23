@@ -10,8 +10,14 @@ echo "Starting internal web server on port 8000..."
 python3 -m http.server 8000 & 
 
 # 2. Create V2Ray config with "Fallback"
+# 2. Create V2Ray config with "Fallback" and INFO logs
 cat << EOF > /v2ray/config.json
 {
+    "log": {
+        "access": "",
+        "error": "",
+        "loglevel": "info"
+    },
     "inbounds": [{
         "port": $PORT,
         "protocol": "vless",
@@ -32,6 +38,7 @@ cat << EOF > /v2ray/config.json
     "outbounds": [{"protocol": "freedom"}]
 }
 EOF
+
 
 # 3. Start V2Ray
 echo "Starting V2Ray on public port $PORT..."
